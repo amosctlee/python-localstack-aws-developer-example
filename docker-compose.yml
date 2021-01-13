@@ -5,7 +5,8 @@ services:
     container_name: "${LOCALSTACK_DOCKER_NAME-localstack-main}"
     image: localstack/localstack
     ports:
-      - "4566-4599:4566-4599"
+      - "4566:4566"
+      - "4571:4571"
       - "${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}"
     environment:
       - SERVICES=s3, dynamodb, sqs
@@ -39,22 +40,30 @@ services:
   develope-python-environment:
     container_name: "aws-python.local"
     image: jupyter/base-notebook
+    user: root
     ports:
       - "5000:5000"
       - "8888:8888"
     volumes:
-      - "./materials:/home/jovyan/work"
+      - "./materials:/home/ctlee/work"
     command: start-notebook.sh --NotebookApp.token=''
-
-  firefox:
-    container_name: firefox
-    image: jlesage/firefox
-    build: .
-    ports:
-      - "5800:5800"
-    volumes:
-      - "/docker/appdata/firefox:/config:rw"
-    shm_size: 2g
-    privileged: true
     environment:
-      - ENABLE_CJK_FONT=1
+      - NB_USER=ctlee
+      - NB_UID=1002
+      - NB_GID=1003
+      - CHOWN_HOME=yes
+
+
+
+  # firefox:
+  #   container_name: firefox
+  #   image: jlesage/firefox
+  #   build: .
+  #   ports:
+  #     - "5800:5800"
+  #   volumes:
+  #     - "/docker/appdata/firefox:/config:rw"
+  #   shm_size: 2g
+  #   privileged: true
+  #   environment:
+  #     - ENABLE_CJK_FONT=1
